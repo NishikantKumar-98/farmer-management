@@ -8,8 +8,7 @@ yarn.lock
 pnpm-lock.yaml
 
 # Vite / build output
-dist/
-.build/
+
 
 # Logs
 logs/
