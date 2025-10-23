@@ -18,7 +18,6 @@ import { ScrollArea } from './ui/scroll-area';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Separator } from './ui/separator';
 import { mockConversations, mockMessages, Conversation, Message } from '../data/messages';
-import { mockFarms } from '../data/farms';
 
 interface ChatMessagingProps {
   isOpen: boolean;

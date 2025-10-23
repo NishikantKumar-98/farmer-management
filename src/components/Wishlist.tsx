@@ -4,7 +4,8 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { useWishlist } from '../hooks/useWishlist';
-import { mockFarms, Crop } from '../data/farms';
+import { useFarms } from '../contexts/FarmsContext';
+import type { Crop } from '../data/farms';
 
 interface WishlistProps {
   onPreOrder: (farm: any, crop: Crop) => void;
@@ -13,9 +14,11 @@ interface WishlistProps {
 export function Wishlist({ onPreOrder }: WishlistProps) {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
 
+  const { farms } = useFarms();
+
   const wishlistItems = wishlist
     .map((item) => {
-      const farm = mockFarms.find((f) => f.id === item.farmId);
+      const farm = farms.find((f) => f.id === item.farmId);
       const crop = farm?.crops.find((c) => c.type === item.cropType);
       return farm && crop ? { farm, crop, addedDate: item.addedDate } : null;
     })

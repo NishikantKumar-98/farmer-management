@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { FarmsProvider, useFarms } from './contexts/FarmsContext';
 import { 
   Filter, 
   X, 
@@ -51,6 +52,7 @@ import { mockFarms, Farm, Crop, CROP_TYPES } from './data/farms';
 
 function AppContent() {
   const { isAuthenticated, user } = useAuth();
+  const { farms, loading: farmsLoading } = useFarms();
   const [authView, setAuthView] = useState<'login' | 'register'>('login');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -78,7 +80,7 @@ function AppContent() {
 
   // Filter farms based on active filters
   const filteredFarms = useMemo(() => {
-    return mockFarms.filter((farm) => {
+    return farms.filter((farm) => {
       // Certified filter
       if (filters.certifiedOnly && !farm.certified) return false;
 
@@ -139,13 +141,12 @@ function AppContent() {
     });
   };
 
-  const compareFarms = mockFarms.filter((farm) => compareList.includes(farm.id));
+  const compareFarms = farms.filter((farm) => compareList.includes(farm.id));
 
   const stats = {
-    totalFarms: mockFarms.length,
-    certifiedFarms: mockFarms.filter((f) => f.certified).length,
-    availableCrops: new Set(mockFarms.flatMap((f) => f.crops.map((c) => c.type)))
-      .size,
+    totalFarms: farms.length,
+    certifiedFarms: farms.filter((f) => f.certified).length,
+    availableCrops: new Set(farms.flatMap((f) => f.crops.map((c) => c.type))).size,
   };
 
   const activeFiltersCount =
@@ -305,7 +306,7 @@ function AppContent() {
                     </Button>
 
                     <div className="text-sm text-gray-600 hidden sm:block">
-                      <span>{filteredFarms.length}</span> farms
+                      <span>{farmsLoading ? '...' : filteredFarms.length}</span> farms
                     </div>
 
                     <div className="flex items-center gap-1 border rounded-lg">
@@ -388,7 +389,7 @@ function AppContent() {
                                 <h3 className="text-lg">Your Favorites ({favorites.length})</h3>
                               </div>
                               <div className="space-y-4">
-                                {mockFarms
+                                {farms
                                   .filter((farm) => favorites.includes(farm.id))
                                   .slice(0, 3)
                                   .map((farm) => (
@@ -406,7 +407,7 @@ function AppContent() {
                               <Button
                                 variant="link"
                                 size="sm"
-                                onClick={() => handleViewProfile(mockFarms.find(f => favorites.includes(f.id))!)}
+                                onClick={() => handleViewProfile(farms.find(f => favorites.includes(f.id))!)}
                                 className="w-full"
                               >
                                 View All Favorites
@@ -576,7 +577,9 @@ function AppContent() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <FarmsProvider>
+        <AppContent />
+      </FarmsProvider>
     </AuthProvider>
   );
 }
