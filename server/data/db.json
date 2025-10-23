@@ -1,0 +1,15 @@
+{
+  "farms": [
+    {
+      "id": "farm1",
+      "name": "Demo Farm",
+      "location": "Block A",
+      "produce": [
+        "wheat",
+        "rice"
+      ]
+    }
+  ],
+  "orders": [],
+  "users": []
+}
